@@ -1,0 +1,79 @@
+<div class="stack">
+  <div class="grid grid--2">
+    <section class="card">
+      <header class="card__header">
+        <i class="fa-solid fa-flag" aria-hidden="true"></i>
+        <h3>Tipos de estado de las alertas</h3>
+      </header>
+      <ul class="legend">
+        @for (item of stateLegend; track item.key) {
+          <li class="legend__item">
+            <span class="legend__icon" [style.color]="item.color"><i [class]="item.icon" aria-hidden="true"></i></span>
+            <div>
+              <div class="legend__title">{{ item.label }}</div>
+              <div class="legend__text">{{ item.description }}</div>
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+    <section class="card">
+      <header class="card__header">
+        <i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
+        <h3>Tipos de criticidad de las alertas</h3>
+      </header>
+      <ul class="legend">
+        @for (item of severityLegend; track item.key) {
+          <li class="legend__item">
+            <span class="legend__icon"><span class="dot dot--lg" [style.--dot-color]="item.color"></span></span>
+            <div>
+              <div class="legend__title">{{ item.label }}</div>
+              <div class="legend__text">{{ item.description }}</div>
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+
+  @for (section of sections; track section.id) {
+    <details class="collapsible board-section" [id]="section.id" [open]="!section.soon">
+      <summary class="section-heading">
+        <img [src]="'assets/img/' + section.image" alt="" />
+        <h2>{{ section.title }}</h2>
+        <span class="spacer"></span>
+        @if (section.soon) {
+          <span class="badge badge--soft" style="--badge-color: var(--tta-gray)">En desarrollo</span>
+        }
+        <i class="fa-solid fa-chevron-down chevron" aria-hidden="true"></i>
+      </summary>
+
+      <div class="board-section__body">
+        @if (section.soon) {
+          <div class="grid grid--3 kpis">
+            <app-stat-card label="Abiertas" [value]="0" color="var(--tta-count-open)" icon="fa-regular fa-folder-open" />
+            <app-stat-card label="En progreso" [value]="0" color="var(--tta-count-progress)" icon="fa-solid fa-spinner" />
+            <app-stat-card label="Resueltas" [value]="0" color="var(--tta-count-resolved)" icon="fa-solid fa-check" />
+          </div>
+          <div class="soon"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> Próximamente…</div>
+        } @else {
+          @for (resource of section.resources; track resource.key) {
+            <div class="board-resource">
+              <h3 class="block-heading">
+                <i class="fa-solid fa-table" aria-hidden="true"></i>
+                {{ resource.title }}
+                <span class="text-dim block-heading__hint">recuento de los últimos {{ windowDays() }} días</span>
+              </h3>
+              <div class="grid grid--3 kpis">
+                <app-stat-card label="Abiertas" [value]="count('open', resource.countsKey)" color="var(--tta-count-open)" icon="fa-regular fa-folder-open" />
+                <app-stat-card label="En progreso" [value]="count('in_progress', resource.countsKey)" color="var(--tta-count-progress)" icon="fa-solid fa-spinner" />
+                <app-stat-card label="Resueltas" [value]="count('resolved', resource.countsKey)" color="var(--tta-count-resolved)" icon="fa-solid fa-check" />
+              </div>
+              <app-data-table [resource]="resource" [params]="filters.alertParams()" [editable]="editable()" (changed)="refreshCounts()" />
+            </div>
+          }
+        }
+      </div>
+    </details>
+  }
+</div>

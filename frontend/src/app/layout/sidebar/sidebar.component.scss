@@ -1,0 +1,230 @@
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--tta-sidebar-width);
+  display: flex;
+  flex-direction: column;
+  background: var(--tta-surface);
+  border-right: 1px solid var(--tta-border);
+  box-shadow: 4px 0 18px rgba(0, 0, 0, 0.18);
+  transition: width 0.2s ease, transform 0.2s ease;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--tta-topbar-height);
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--tta-border);
+  background: #ffffff;
+}
+
+.sidebar__logo {
+  height: 40px;
+  width: auto;
+}
+
+.sidebar__icon {
+  display: none;
+  height: 40px;
+  width: auto;
+}
+
+.sidebar__user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--tta-border);
+}
+
+.sidebar__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+  box-shadow: 0 0 0 2px var(--tta-primary);
+}
+
+.sidebar__user-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.sidebar__username {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar__role {
+  font-size: 0.78rem;
+  color: var(--tta-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar__nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem 0.6rem;
+}
+
+.sidebar__section + .sidebar__section {
+  margin-top: 1rem;
+}
+
+.sidebar__section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tta-text-dim);
+
+  i {
+    width: 1.1rem;
+    text-align: center;
+  }
+}
+
+.sidebar__list {
+  list-style: none;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: var(--tta-radius-sm);
+  color: var(--tta-text-muted);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.12s ease, color 0.12s ease;
+
+  i {
+    width: 1.2rem;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  span:not(.sidebar__soon) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover {
+    background: var(--tta-surface-2);
+    color: var(--tta-text);
+    text-decoration: none;
+  }
+
+  &.is-active {
+    background: var(--tta-primary);
+    color: #fff;
+  }
+
+  &.is-disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+}
+
+.sidebar__soon {
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: var(--tta-surface-3);
+  color: var(--tta-text-dim);
+}
+
+.sidebar__footer {
+  padding: 0.75rem 1.1rem;
+  border-top: 1px solid var(--tta-border);
+  font-size: 0.75rem;
+  color: var(--tta-text-dim);
+  white-space: nowrap;
+}
+
+// ---------------------------------------------------------------------------
+// Plegado
+// ---------------------------------------------------------------------------
+.sidebar.is-collapsed {
+  width: var(--tta-sidebar-collapsed);
+
+  .sidebar__logo,
+  .sidebar__user-text,
+  .sidebar__section-title span,
+  .sidebar__link span,
+  .sidebar__footer {
+    display: none;
+  }
+
+  .sidebar__icon {
+    display: block;
+  }
+
+  .sidebar__user {
+    justify-content: center;
+    padding: 0.9rem 0;
+  }
+
+  .sidebar__section-title,
+  .sidebar__link {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 992px) {
+  .sidebar,
+  .sidebar.is-collapsed {
+    width: var(--tta-sidebar-width);
+    transform: translateX(-100%);
+
+    .sidebar__logo,
+    .sidebar__user-text,
+    .sidebar__section-title span,
+    .sidebar__link span,
+    .sidebar__footer {
+      display: initial;
+    }
+
+    .sidebar__icon {
+      display: none;
+    }
+
+    .sidebar__link,
+    .sidebar__section-title {
+      justify-content: flex-start;
+      padding-left: 0.7rem;
+      padding-right: 0.7rem;
+    }
+  }
+
+  :host-context(.is-mobile-open) .sidebar {
+    transform: translateX(0);
+  }
+}

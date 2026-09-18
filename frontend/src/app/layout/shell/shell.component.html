@@ -1,0 +1,41 @@
+<div class="shell" [class.is-collapsed]="collapsed()" [class.is-mobile-open]="mobileOpen()">
+  <app-sidebar [collapsed]="collapsed()" (navigated)="closeMobile()" />
+  <div class="shell__backdrop" (click)="closeMobile()" aria-hidden="true"></div>
+
+  <div class="shell__main">
+    <header class="topbar">
+      <button type="button" class="btn btn--icon btn--ghost topbar__toggle" (click)="toggleSidebar()" aria-label="Mostrar u ocultar el menú">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+
+      <div class="topbar__filters">
+        <app-global-filters [kinds]="routeInfo().filters" />
+      </div>
+
+      <div class="topbar__user">
+        <button type="button" class="topbar__user-btn" (click)="userMenuOpen.set(!userMenuOpen())" [attr.aria-expanded]="userMenuOpen()">
+          <img src="assets/img/avatar.jpg" alt="" class="topbar__avatar" />
+          <span class="topbar__user-text">
+            <span class="topbar__username">{{ auth.username() }}</span>
+            <span class="topbar__role">{{ roleLabel() }}@if (auth.customer(); as customer) { · {{ customer.name }} }</span>
+          </span>
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        @if (userMenuOpen()) {
+          <div class="topbar__menu" role="menu">
+            <button type="button" class="topbar__menu-item" (click)="logout()" role="menuitem">
+              <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Cerrar sesión
+            </button>
+          </div>
+        }
+      </div>
+    </header>
+
+    <main class="content">
+      @if (routeInfo().title) {
+        <h1 class="page-title">{{ routeInfo().title }}</h1>
+      }
+      <router-outlet />
+    </main>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<aside class="sidebar" [class.is-collapsed]="collapsed()">
+  <a class="sidebar__brand" routerLink="/" aria-label="Threat Track App">
+    <img class="sidebar__logo" src="assets/img/LogoTTA.png" alt="Threat Track App" />
+    <img class="sidebar__icon" src="assets/img/iconTTA.png" alt="" />
+  </a>
+
+  <div class="sidebar__user">
+    <img src="assets/img/avatar.jpg" alt="" class="sidebar__avatar" />
+    <div class="sidebar__user-text">
+      <span class="sidebar__username">{{ auth.username() }}</span>
+      <span class="sidebar__role">{{ auth.isAnalyst() ? 'Analista' : (auth.customer()?.name ?? 'Cliente') }}</span>
+    </div>
+  </div>
+
+  <nav class="sidebar__nav" aria-label="Secciones">
+    @for (section of sections; track section.label) {
+      @if (!section.analystOnly || auth.isAnalyst()) {
+        <div class="sidebar__section">
+          <div class="sidebar__section-title">
+            <i [class]="section.icon" aria-hidden="true"></i>
+            <span>{{ section.label }}</span>
+          </div>
+          <ul class="sidebar__list">
+            @for (item of section.items; track item.label) {
+              <li>
+                @if (item.route) {
+                  <a class="sidebar__link" [routerLink]="item.route" routerLinkActive="is-active" (click)="navigated.emit()" [title]="item.label">
+                    <i [class]="item.icon" aria-hidden="true"></i>
+                    <span>{{ item.label }}</span>
+                  </a>
+                } @else {
+                  <span class="sidebar__link is-disabled" [title]="item.label + ' (próximamente)'">
+                    <i [class]="item.icon" aria-hidden="true"></i>
+                    <span>{{ item.label }}</span>
+                    <span class="sidebar__soon">Pronto</span>
+                  </span>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    }
+  </nav>
+
+  <div class="sidebar__footer">
+    <span>Threat Track App</span>
+  </div>
+</aside>

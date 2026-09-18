@@ -1,0 +1,62 @@
+<div class="stack">
+  <div class="notice">
+    <i class="fa-solid fa-flask" aria-hidden="true"></i>
+    Panel con datos de ejemplo. La conexión con la telemetría real de los servidores está prevista como trabajo futuro.
+  </div>
+
+  <div class="grid grid--2">
+    <div class="grid kpis">
+      <app-stat-card label="Tiempo activo" value="2,6" caption="días" color="var(--tta-text)" icon="fa-solid fa-clock" />
+      <app-stat-card label="Procesadores" [value]="175" color="var(--tta-negative)" icon="fa-solid fa-microchip" />
+      <app-stat-card label="Problemas" [value]="532" color="var(--tta-negative)" icon="fa-solid fa-bug" />
+      <app-stat-card label="Zombies" [value]="0" color="var(--tta-positive)" icon="fa-solid fa-skull" />
+    </div>
+
+    <div class="grid grid--3">
+      @for (gauge of gauges; track gauge.label) {
+        <app-chart-card [title]="gauge.label" icon="fa-solid fa-gauge" type="doughnut" [data]="gauge.data" [options]="gaugeOptions" [centerText]="gauge.value + ' %'" [height]="150" />
+      }
+    </div>
+  </div>
+
+  <div class="grid grid--2">
+    @for (chart of charts; track chart.title) {
+      <app-chart-card [title]="chart.title" icon="fa-solid fa-chart-area" type="line" [data]="chart.data" [options]="lineOptions" [height]="240">
+        <table actions class="visually-hidden"></table>
+      </app-chart-card>
+    }
+  </div>
+
+  <div class="grid grid--2">
+    @for (chart of charts; track chart.title) {
+      <section class="card">
+        <header class="card__header">
+          <i class="fa-solid fa-table-list" aria-hidden="true"></i>
+          <h3>{{ chart.title }}: resumen</h3>
+        </header>
+        <div class="card__body">
+          <table class="summary">
+            <thead>
+              <tr>
+                <th></th>
+                @for (column of chart.columns; track column) {
+                  <th>{{ column }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of chart.rows; track row.label) {
+                <tr>
+                  <td><span class="dot" [style.--dot-color]="row.color"></span> {{ row.label }}</td>
+                  @for (value of row.values; track $index) {
+                    <td>{{ value }}</td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    }
+  </div>
+</div>

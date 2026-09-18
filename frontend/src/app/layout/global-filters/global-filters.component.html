@@ -1,0 +1,68 @@
+@if (hasAny()) {
+  <div class="filters" role="group" aria-label="Filtros globales">
+    @if (showDates()) {
+      <div class="filters__group">
+        <label class="filters__label" for="gf-preset">Fecha de detección</label>
+        <div class="filters__dates">
+          <select id="gf-preset" class="select filters__control" [value]="preset()" (change)="applyPreset($any($event.target).value)">
+            <option value="">Todas las fechas</option>
+            @for (item of presets; track item.key) {
+              <option [value]="item.key">{{ item.label }}</option>
+            }
+          </select>
+          <input class="input filters__control filters__date" type="date" aria-label="Desde" [value]="store.dateRange()?.from ?? ''" (change)="setFrom($any($event.target).value)" />
+          <span class="filters__sep" aria-hidden="true">–</span>
+          <input class="input filters__control filters__date" type="date" aria-label="Hasta" [value]="store.dateRange()?.to ?? ''" (change)="setTo($any($event.target).value)" />
+        </div>
+      </div>
+    }
+
+    @if (showCustomer()) {
+      <div class="filters__group">
+        <label class="filters__label" for="gf-customer">Cliente</label>
+        @if (auth.isAnalyst()) {
+          <select id="gf-customer" class="select filters__control" [value]="store.customerId() ?? ''" (change)="setCustomer($any($event.target).value)">
+            <option value="">Todos los clientes</option>
+            @for (option of lookups.customers(); track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        } @else {
+          <span id="gf-customer" class="filters__static">{{ auth.customer()?.name ?? '—' }}</span>
+        }
+      </div>
+    }
+
+    @if (showState()) {
+      <div class="filters__group">
+        <label class="filters__label" for="gf-state">Estado</label>
+        <select id="gf-state" class="select filters__control" [value]="store.stateId() ?? ''" (change)="setState($any($event.target).value)">
+          <option value="">Todos los estados</option>
+          @for (option of lookups.states(); track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+    }
+
+    @if (showSeverity()) {
+      <div class="filters__group">
+        <label class="filters__label" for="gf-severity">Criticidad</label>
+        <select id="gf-severity" class="select filters__control" [value]="store.severityId() ?? ''" (change)="setSeverity($any($event.target).value)">
+          <option value="">Todas las criticidades</option>
+          @for (option of lookups.severities(); track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+    }
+
+    <button type="button" class="btn btn--sm btn--ghost filters__clear" (click)="clear()" [disabled]="clearableCount() === 0">
+      <i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i>
+      <span>Limpiar filtros</span>
+      @if (clearableCount() > 0) {
+        <span class="filters__count">{{ clearableCount() }}</span>
+      }
+    </button>
+  </div>
+}

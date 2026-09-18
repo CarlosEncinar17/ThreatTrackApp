@@ -1,0 +1,60 @@
+<div class="stack">
+  @if (customerId() === null) {
+    <div class="notice">
+      <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+      Selecciona un cliente en la barra superior para ver qué servicios tiene contratados.
+    </div>
+  } @else if (subscription(); as sub) {
+    <div class="notice notice--ok">
+      <i class="fa-solid fa-user-check" aria-hidden="true"></i>
+      Servicios contratados por <strong>{{ sub.customer_name }}</strong>
+      @if (sub.notes) {
+        <span class="text-dim">· {{ sub.notes }}</span>
+      }
+    </div>
+  } @else if (loaded()) {
+    <div class="notice">
+      <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+      Este cliente aún no tiene servicios contratados registrados.
+    </div>
+  }
+
+  <div class="services">
+    @for (service of services; track service.title) {
+      <article class="card service" [class.is-active]="status(service) === 'active'" [class.is-soon]="status(service) === 'soon'">
+        <div class="service__icon">
+          <img [src]="'assets/img/' + service.image" alt="" />
+        </div>
+        <div class="service__body">
+          <h3 class="service__title">
+            <a [routerLink]="alertsRoute()" [fragment]="service.anchor">{{ service.title }}</a>
+          </h3>
+          <p class="service__text">{{ service.description }}</p>
+        </div>
+        <div class="service__status">
+          @switch (status(service)) {
+            @case ('active') {
+              <span class="status status--active" title="Servicio contratado y activo"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+              <span class="status__label">Activo</span>
+            }
+            @case ('inactive') {
+              <span class="status status--inactive" title="Servicio no contratado"><i class="fa-solid fa-xmark" aria-hidden="true"></i></span>
+              <span class="status__label">No contratado</span>
+            }
+            @case ('soon') {
+              <span class="status status--soon" title="Servicio en desarrollo"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i></span>
+              <span class="status__label">En desarrollo</span>
+            }
+            @case ('none') {
+              <span class="status status--unknown" title="Selecciona un cliente"><i class="fa-solid fa-user-slash" aria-hidden="true"></i></span>
+              <span class="status__label">Sin cliente</span>
+            }
+            @default {
+              <span class="status status--unknown"><i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i></span>
+            }
+          }
+        </div>
+      </article>
+    }
+  </div>
+</div>

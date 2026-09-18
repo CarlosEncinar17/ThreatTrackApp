@@ -1,0 +1,46 @@
+<app-auth-card message="Introduce tus credenciales para iniciar sesión.">
+  @if (expired()) {
+    <div class="auth-alert auth-alert--info">
+      <i class="fa-solid fa-clock" aria-hidden="true"></i> Tu sesión ha caducado. Vuelve a iniciar sesión.
+    </div>
+  }
+  @if (error()) {
+    <div class="auth-alert auth-alert--error" role="alert">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> {{ error() }}
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="auth-form">
+    <div class="field">
+      <label for="username">Usuario</label>
+      <div class="auth-input">
+        <input id="username" class="input" type="text" formControlName="username" autocomplete="username" placeholder="Nombre de usuario" />
+        <i class="fa-solid fa-user" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="field">
+      <label for="password">Contraseña</label>
+      <div class="auth-input">
+        <input id="password" class="input" type="password" formControlName="password" autocomplete="current-password" placeholder="Contraseña" />
+        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="auth-row">
+      <label class="checkbox">
+        <input type="checkbox" formControlName="remember" />
+        <span>Mantener sesión iniciada</span>
+      </label>
+      <button type="submit" class="btn btn--primary" [disabled]="busy()">
+        @if (busy()) {
+          <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+        }
+        Entrar
+      </button>
+    </div>
+  </form>
+
+  <div class="auth-links">
+    <a routerLink="/forgot-password">¿No puedes iniciar sesión?</a>
+    <a routerLink="/register">Crear cuenta</a>
+  </div>
+</app-auth-card>

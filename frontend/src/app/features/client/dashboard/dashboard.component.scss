@@ -1,0 +1,43 @@
+.cases {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.cases__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.65rem 1.1rem;
+  border-bottom: 1px solid var(--tta-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.cases__number {
+  min-width: 3.2rem;
+  text-align: right;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--tta-primary);
+}
+
+.cases__number--open {
+  color: var(--tta-state-open);
+}
+
+.cases__number--resolved {
+  color: var(--tta-state-resolved);
+}
+
+.cases__label {
+  color: var(--tta-text-muted);
+}
+
+.range {
+  display: flex;
+  gap: 0.3rem;
+}

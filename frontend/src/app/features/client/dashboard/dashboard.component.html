@@ -1,0 +1,110 @@
+<div class="stack">
+  <div class="grid grid--2">
+    <app-chart-card
+      title="Casos abiertos frente a resueltos"
+      type="doughnut"
+      [data]="totalsData()"
+      [options]="doughnutOptions"
+      [centerText]="totalsCenter()"
+      [datalabels]="true"
+      [empty]="!loading() && totalsCenter() === 'Total: 0'"
+    />
+    <app-chart-card
+      title="Todos los casos por criticidad"
+      type="doughnut"
+      [data]="severityData()"
+      [options]="doughnutOptions"
+      [centerText]="severityCenter()"
+      [datalabels]="true"
+      [empty]="!loading() && severityCenter() === 'Total: 0'"
+    />
+  </div>
+
+  <div class="grid grid--2">
+    <app-chart-card
+      title="Casos abiertos por criticidad"
+      type="doughnut"
+      [data]="openBySeverityData()"
+      [options]="doughnutOptions"
+      [centerText]="openBySeverityCenter()"
+      [datalabels]="true"
+      [empty]="!loading() && openBySeverityCenter() === 'Total: 0'"
+    />
+    <app-chart-card
+      title="Casos resueltos por criticidad"
+      type="doughnut"
+      [data]="resolvedBySeverityData()"
+      [options]="doughnutOptions"
+      [centerText]="resolvedBySeverityCenter()"
+      [datalabels]="true"
+      [empty]="!loading() && resolvedBySeverityCenter() === 'Total: 0'"
+    />
+  </div>
+
+  <div class="grid grid--2">
+    <section class="card">
+      <header class="card__header">
+        <i class="fa-solid fa-list" aria-hidden="true"></i>
+        <h3>Casos abiertos</h3>
+      </header>
+      <ul class="cases">
+        @for (key of moduleKeys; track key) {
+          <li class="cases__item">
+            <span class="cases__number cases__number--open">{{ modules()?.open_by_module?.[key] ?? 0 }}</span>
+            <span class="cases__label">{{ moduleMeta[key].label }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+    <section class="card">
+      <header class="card__header">
+        <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+        <h3>Casos resueltos</h3>
+      </header>
+      <ul class="cases">
+        @for (key of moduleKeys; track key) {
+          <li class="cases__item">
+            <span class="cases__number cases__number--resolved">{{ modules()?.resolved_by_module?.[key] ?? 0 }}</span>
+            <span class="cases__label">{{ moduleMeta[key].label }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+
+  <app-chart-card
+    title="Evolución diaria de casos abiertos y resueltos"
+    icon="fa-solid fa-chart-column"
+    type="bar"
+    [data]="dailyData()"
+    [options]="stackedOptions"
+    [height]="320"
+    [empty]="!loading() && dailyEmpty()"
+  >
+    <div actions class="range">
+      @for (days of ranges; track days) {
+        <button type="button" class="btn btn--sm" [class.btn--primary]="range() === days" [class.btn--ghost]="range() !== days" (click)="range.set(days)">
+          {{ days === 365 ? 'Todo el año' : days + ' días' }}
+        </button>
+      }
+    </div>
+  </app-chart-card>
+
+  <app-chart-card
+    title="Recuento diario de casos por servicio"
+    icon="fa-solid fa-chart-column"
+    type="bar"
+    [data]="dailyModulesData()"
+    [options]="groupedOptions"
+    [height]="340"
+    [empty]="!loading() && dailyModulesEmpty()"
+  >
+    <div actions class="range">
+      @for (days of ranges; track days) {
+        <button type="button" class="btn btn--sm" [class.btn--primary]="range() === days" [class.btn--ghost]="range() !== days" (click)="range.set(days)">
+          {{ days === 365 ? 'Todo el año' : days + ' días' }}
+        </button>
+      }
+    </div>
+  </app-chart-card>
+</div>

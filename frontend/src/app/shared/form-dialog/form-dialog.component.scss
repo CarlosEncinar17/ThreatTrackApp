@@ -1,0 +1,76 @@
+.dialog {
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-width: min(720px, calc(100vw - 2rem));
+  width: 100%;
+  color: var(--tta-text);
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+  }
+}
+
+.dialog__panel {
+  background: var(--tta-surface);
+  border: 1px solid var(--tta-border-strong);
+  border-radius: var(--tta-radius);
+  box-shadow: var(--tta-shadow);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);
+}
+
+.dialog__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--tta-border);
+
+  h2 {
+    flex: 1;
+    font-size: 1.1rem;
+  }
+}
+
+.dialog__body {
+  padding: 1.25rem;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1.1rem;
+}
+
+.field--wide,
+.dialog__checkbox {
+  grid-column: 1 / -1;
+}
+
+.dialog__checkbox {
+  padding: 0.35rem 0;
+}
+
+.req {
+  color: var(--tta-warning);
+  margin-left: 0.15rem;
+}
+
+.hint {
+  font-size: 0.75rem;
+}
+
+.dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding: 0.9rem 1.25rem;
+  border-top: 1px solid var(--tta-border);
+}
+
+@media (max-width: 640px) {
+  .dialog__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

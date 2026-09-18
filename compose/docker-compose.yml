@@ -1,0 +1,77 @@
+# ThreatTrackApp - orquestacion de los tres servicios.
+# Variables en ./.env (copiar desde .env.example). Arranque: docker compose up --build
+
+services:
+  database:
+    image: postgres:16
+    container_name: threattrack-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ThreatTrackAppDB}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en compose/.env}
+    volumes:
+      # Solo se ejecutan la primera vez que se crea el volumen de datos.
+      - ./db/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./db/02_seed.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-ThreatTrackAppDB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+    restart: unless-stopped
+
+  # El puerto 5432 no se publica al host por defecto. Para conectar con un cliente SQL
+  # desde fuera de Docker: docker compose --profile debug up (publica 127.0.0.1:5432).
+  database-port:
+    image: alpine/socat
+    container_name: threattrack-db-port
+    command: TCP-LISTEN:5432,fork,reuseaddr TCP:database:5432
+    ports:
+      - "127.0.0.1:5432:5432"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - internal
+    profiles: ["debug"]
+
+  backend:
+    build:
+      context: ../backend
+    container_name: threattrack-backend
+    env_file:
+      - ./.env
+    environment:
+      DJANGO_ENV: ${DJANGO_ENV:-production}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB:-ThreatTrackAppDB}
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks:
+      - internal
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ../frontend
+    container_name: threattrack-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    networks:
+      - internal
+    restart: unless-stopped
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  postgres_data:

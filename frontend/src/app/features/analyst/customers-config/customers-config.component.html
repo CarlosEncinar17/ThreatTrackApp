@@ -1,0 +1,85 @@
+<div class="stack">
+  <section class="card">
+    <header class="card__header">
+      <i class="fa-solid fa-user-check" aria-hidden="true"></i>
+      <h2>Clientes</h2>
+    </header>
+    <div class="card__body">
+      <app-data-table [resource]="customers" [editable]="true" (changed)="customersChanged()" />
+    </div>
+  </section>
+
+  <section class="card">
+    <header class="card__header">
+      <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+      <h2>Servicios contratados por los clientes</h2>
+    </header>
+    <div class="card__body">
+      <app-data-table [resource]="subscriptions" [params]="subscriptionParams()" [editable]="true" />
+    </div>
+  </section>
+
+  <div class="section-heading">
+    <i class="fa-solid fa-database heading-icon" aria-hidden="true"></i>
+    <h2>Metadatos de clientes</h2>
+  </div>
+
+  <div class="grid grid--5-7">
+    <app-chart-card title="Recuento de IPs" type="doughnut" [data]="ipData()" [options]="doughnutOptions" [centerText]="'Total: ' + total(ipCount())" [datalabels]="true" [height]="260" [empty]="total(ipCount()) === 0">
+      <div actions class="mini-stats">
+        <app-stat-card label="Activas" [value]="ipCount()?.active" color="var(--tta-positive)" />
+        <app-stat-card label="Inactivas" [value]="ipCount()?.inactive" color="var(--tta-negative)" />
+      </div>
+    </app-chart-card>
+    <section class="card">
+      <header class="card__header"><i class="fa-solid fa-network-wired" aria-hidden="true"></i><h2>IPs del cliente</h2></header>
+      <div class="card__body">
+        <app-data-table [resource]="ips" [params]="filters.assetParams()" [editable]="true" (changed)="refreshCounts()" />
+      </div>
+    </section>
+  </div>
+
+  <div class="grid grid--5-7">
+    <app-chart-card title="Recuento de dominios" type="doughnut" [data]="domainData()" [options]="doughnutOptions" [centerText]="'Total: ' + total(domainCount())" [datalabels]="true" [height]="260" [empty]="total(domainCount()) === 0">
+      <div actions class="mini-stats">
+        <app-stat-card label="Activos" [value]="domainCount()?.active" color="var(--tta-positive)" />
+        <app-stat-card label="Inactivos" [value]="domainCount()?.inactive" color="var(--tta-negative)" />
+      </div>
+    </app-chart-card>
+    <section class="card">
+      <header class="card__header"><i class="fa-solid fa-globe" aria-hidden="true"></i><h2>Dominios del cliente</h2></header>
+      <div class="card__body">
+        <app-data-table [resource]="domains" [params]="filters.assetParams()" [editable]="true" (changed)="refreshCounts()" />
+      </div>
+    </section>
+  </div>
+
+  <div class="grid grid--5-7">
+    <app-chart-card title="Recuento de keywords" type="doughnut" [data]="keywordData()" [options]="doughnutOptions" [centerText]="'Total: ' + total(keywordCount())" [datalabels]="true" [height]="260" [empty]="total(keywordCount()) === 0">
+      <div actions class="mini-stats">
+        <app-stat-card label="Activas" [value]="keywordCount()?.active" color="var(--tta-positive)" />
+        <app-stat-card label="Inactivas" [value]="keywordCount()?.inactive" color="var(--tta-negative)" />
+      </div>
+    </app-chart-card>
+    <section class="card">
+      <header class="card__header"><i class="fa-solid fa-key" aria-hidden="true"></i><h2>Keywords del cliente</h2></header>
+      <div class="card__body">
+        <app-data-table [resource]="keywords" [params]="filters.assetParams()" [editable]="true" (changed)="refreshCounts()" />
+      </div>
+    </section>
+  </div>
+
+  <div class="section-heading">
+    <i class="fa-solid fa-magnifying-glass heading-icon" aria-hidden="true"></i>
+    <h2>Dorks</h2>
+  </div>
+
+  @for (dork of dorks; track dork.key) {
+    <section class="card">
+      <header class="card__header"><i class="fa-solid fa-terminal" aria-hidden="true"></i><h2>{{ dork.title }}</h2></header>
+      <div class="card__body">
+        <app-data-table [resource]="dork" [params]="filters.assetParams()" [editable]="true" />
+      </div>
+    </section>
+  }
+</div>

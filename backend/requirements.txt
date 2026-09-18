@@ -1,0 +1,12 @@
+# Mismas dependencias que el proyecto original, fijadas a las versiones que ya tenia
+# instaladas para que las construcciones sean reproducibles.
+Django==5.0.6
+djangorestframework==3.15.2
+django-cors-headers==4.4.0
+django-filter==24.2
+psycopg2==2.9.9
+asgiref==3.8.1
+sqlparse==0.5.0
+tzdata==2024.1
+django-environ==0.11.2
+gunicorn==20.1.0

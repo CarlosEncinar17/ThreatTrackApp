@@ -1,0 +1,87 @@
+<dialog #dialog class="dialog" (cancel)="onCancelEvent($event)" (click)="onBackdropClick($event)">
+  <form class="dialog__panel" [formGroup]="form()" (ngSubmit)="submit()" novalidate>
+    <header class="dialog__header">
+      <h2>{{ title() }}</h2>
+      <button type="button" class="btn btn--icon btn--ghost" (click)="cancel()" aria-label="Cerrar">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </header>
+
+    <div class="dialog__body">
+      @for (field of (open() ? fields() : []); track field.key) {
+        @if (field.type === 'checkbox') {
+          <label class="checkbox dialog__checkbox">
+            <input type="checkbox" [formControlName]="field.key" />
+            <span>{{ field.label }}</span>
+          </label>
+        } @else {
+          <div class="field" [class.field--wide]="field.type === 'textarea'">
+            <label [for]="'f-' + field.key">
+              {{ field.label }}
+              @if (field.required) {
+                <span class="req" aria-hidden="true">*</span>
+              }
+            </label>
+
+            @switch (field.type) {
+              @case ('select') {
+                <select class="select" [id]="'f-' + field.key" [formControlName]="field.key" [class.is-invalid]="invalid(field.key)">
+                  <option [ngValue]="null">— Selecciona —</option>
+                  @for (option of options()[field.options!] ?? []; track option.value) {
+                    <option [ngValue]="option.value">{{ option.label }}</option>
+                  }
+                </select>
+              }
+              @case ('textarea') {
+                <textarea class="textarea" [id]="'f-' + field.key" [formControlName]="field.key" [placeholder]="field.placeholder ?? ''" [class.is-invalid]="invalid(field.key)"></textarea>
+              }
+              @case ('date') {
+                <input class="input" type="date" [id]="'f-' + field.key" [formControlName]="field.key" [class.is-invalid]="invalid(field.key)" />
+              }
+              @case ('datetime') {
+                <input class="input" type="datetime-local" [id]="'f-' + field.key" [formControlName]="field.key" [class.is-invalid]="invalid(field.key)" />
+              }
+              @case ('number') {
+                <input class="input" type="number" [id]="'f-' + field.key" [formControlName]="field.key" [class.is-invalid]="invalid(field.key)" />
+              }
+              @case ('email') {
+                <input class="input" type="email" [id]="'f-' + field.key" [formControlName]="field.key" [placeholder]="field.placeholder ?? ''" [class.is-invalid]="invalid(field.key)" />
+              }
+              @case ('url') {
+                <input class="input" type="url" [id]="'f-' + field.key" [formControlName]="field.key" [placeholder]="field.placeholder ?? 'https://'" [class.is-invalid]="invalid(field.key)" />
+              }
+              @default {
+                <input class="input" type="text" [id]="'f-' + field.key" [formControlName]="field.key" [placeholder]="field.placeholder ?? ''" [class.is-invalid]="invalid(field.key)" />
+              }
+            }
+
+            @if (field.hint) {
+              <span class="text-dim hint">{{ field.hint }}</span>
+            }
+            @if (invalid(field.key)) {
+              <span class="field__error">
+                @if (control(field.key).errors?.['required']) {
+                  Este campo es obligatorio.
+                } @else if (control(field.key).errors?.['email']) {
+                  Introduce un correo electrónico válido.
+                } @else {
+                  Valor no válido.
+                }
+              </span>
+            }
+          </div>
+        }
+      }
+    </div>
+
+    <footer class="dialog__footer">
+      <button type="button" class="btn btn--ghost" (click)="cancel()" [disabled]="busy()">Cancelar</button>
+      <button type="submit" class="btn btn--primary" [disabled]="busy()">
+        @if (busy()) {
+          <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+        }
+        {{ isEdit() ? 'Guardar cambios' : 'Crear' }}
+      </button>
+    </footer>
+  </form>
+</dialog>

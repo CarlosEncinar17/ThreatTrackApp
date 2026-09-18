@@ -1,0 +1,28 @@
+.heading-icon {
+  font-size: 1.4rem;
+  color: var(--tta-state-open);
+}
+
+.mini-stats {
+  display: none;
+}
+
+@media (min-width: 993px) {
+  .mini-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+
+    ::ng-deep .stat {
+      padding: 0.3rem 0.6rem 0.3rem 0.8rem;
+    }
+
+    ::ng-deep .stat__value {
+      font-size: 1.1rem;
+    }
+
+    ::ng-deep .stat__label {
+      font-size: 0.65rem;
+    }
+  }
+}
